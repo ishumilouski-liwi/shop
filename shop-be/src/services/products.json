@@ -1,0 +1,16 @@
+[
+    {
+        "id": "1",
+        "description": "he AS73 is the kind of semi-hollow that can tackle just about any genre of music you throw at it. The pickups are mounted into a sustain block for increased sustain and feedback elimination while the 17th fret joint offers comfortable access to higher notes. The AS73 features a select-grade linden top, back, and sides.",
+        "price": 449.30,
+        "title": "Ibanez Artcore AS73 - Tobacco Brown",
+        "image": "https://www.ibanez.com/common/product_artist_file/file/p_region_AS73_TBC_5B_05.png"
+    },
+    {
+        "id": "2",
+        "description": "As the crown jewel of Ibanez, the Prestige line represents the passion and pride of Japanese luthiery. These guitars, produced exclusively in Japan, have earned worldwide acclaim and respect throughout the industry for their craftsmanship, quality, and innovation. Combine this with the classic Ibanez RG design and you have an instrument that truly represents a cornerstone of the Ibanez legacy. ",
+        "price": 1449.30,
+        "title": "Ibanez RG652AHMFX Prestige",
+        "image": "https://www.ibanez.com/common/product_artist_file/file/p_region_RG652AHMFX_NGB_00_01.png"
+    }
+]
