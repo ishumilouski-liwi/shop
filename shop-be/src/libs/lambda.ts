@@ -1,8 +1,13 @@
 import middy from "@middy/core";
 import httpCors from "@middy/http-cors";
 import { APIGatewayProxyEvent } from "aws-lambda/trigger/api-gateway-proxy";
+import httpJsonBodyParser from "@middy/http-json-body-parser";
+import { ValidatedEventAPIGatewayProxyEvent } from "./api-gateway";
 
 export const GET = (handler): any => middy(handler).use(httpCors());
+
+export const PUT = <T>(handler: ValidatedEventAPIGatewayProxyEvent<T>) =>
+  middy(handler).use(httpCors()).use(httpJsonBodyParser());
 
 export const apiGatewayProxyEventTemplate: APIGatewayProxyEvent = {
   body: "eyJ0ZXN0IjoiYm9keSJ9",

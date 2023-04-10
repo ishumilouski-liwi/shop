@@ -1,7 +1,8 @@
 import type { AWS } from "@serverless/typescript";
 
-import getAllProducts from "@functions/getAllProducts";
-import getProduct from "@functions/getProduct";
+import getProductsInStock from "@functions/getProductsInStock";
+import getProductInStock from "@functions/getProductInStock";
+import createProductInStock from "@functions/createProductInStock";
 
 const serverlessConfiguration: AWS = {
   service: "shop-be",
@@ -22,10 +23,12 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      DB_PRODUCTS_TABLE_NAME: "${ssm:/system/api/DB_PRODUCTS_TABLE_NAME}",
+      DB_STOCK_TABLE_NAME: "${ssm:/system/api/DB_STOCK_TABLE_NAME}",
     },
   },
   // import the function via paths
-  functions: { getAllProducts, getProduct },
+  functions: { getProductsInStock, getProductInStock, createProductInStock },
   package: { individually: true },
   custom: {
     jest: {},
