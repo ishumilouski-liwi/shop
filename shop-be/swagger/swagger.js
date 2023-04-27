@@ -8,9 +8,9 @@
   "paths": {
     "/product/available": {
       "get": {
-        "summary": "getAllProducts",
+        "summary": "getProductsInStock",
         "description": "",
-        "operationId": "getAllProducts.get.product/available",
+        "operationId": "getProductsInStock.get.product/available",
         "consumes": [
           "application/json"
         ],
@@ -27,9 +27,9 @@
     },
     "/product/{id}": {
       "get": {
-        "summary": "getProduct",
+        "summary": "getProductInStock",
         "description": "",
-        "operationId": "getProduct.get.product/{id}",
+        "operationId": "getProductInStock.get.product/{id}",
         "consumes": [
           "application/json"
         ],
@@ -44,6 +44,25 @@
             "type": "string"
           }
         ],
+        "responses": {
+          "200": {
+            "description": "200 response"
+          }
+        }
+      }
+    },
+    "/product": {
+      "put": {
+        "summary": "createProductInStock",
+        "description": "",
+        "operationId": "createProductInStock.put.product",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "200 response"

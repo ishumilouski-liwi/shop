@@ -3,8 +3,4 @@ export interface Product {
   description: string;
   price: number;
   title: string;
-  /**
-   * image source URL
-   */
-  image: string;
 }
