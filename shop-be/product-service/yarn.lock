@@ -8591,6 +8591,13 @@ serverless-auto-swagger@^2.12.0:
     fs-extra "^10.0.0"
     typeconv "^1.4.1"
 
+serverless-deployment-bucket@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/serverless-deployment-bucket/-/serverless-deployment-bucket-1.6.0.tgz#51bc57e832e4c849910b72d8f31b012785307c82"
+  integrity sha512-IXllFmAeMl09u5pOEv5HHYvPgWf9TBkz+4NsOac8YhXgRYL4H9N2wgEh8vN+8/H3ej/2GcE08vcJK2Zc+hmVFw==
+  dependencies:
+    chalk "^2.4.2"
+
 serverless-esbuild@^1.23.3:
   version "1.43.0"
   resolved "https://registry.npmjs.org/serverless-esbuild/-/serverless-esbuild-1.43.0.tgz"

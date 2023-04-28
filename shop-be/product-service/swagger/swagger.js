@@ -2,7 +2,7 @@
             module.exports = {
   "swagger": "2.0",
   "info": {
-    "title": "shop-be",
+    "title": "shop-product-service",
     "version": "1"
   },
   "paths": {
@@ -53,16 +53,26 @@
     },
     "/product": {
       "put": {
-        "summary": "createProductInStock",
+        "summary": "upsertProductInStock",
         "description": "",
-        "operationId": "createProductInStock.put.product",
+        "operationId": "upsertProductInStock.put.product",
         "consumes": [
           "application/json"
         ],
         "produces": [
           "application/json"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Body required in the request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PutUpsertProductInStockBody"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "200 response"
@@ -71,6 +81,72 @@
       }
     }
   },
-  "definitions": {},
+  "definitions": {
+    "Product": {
+      "properties": {
+        "id": {
+          "title": "Product.id",
+          "type": "string"
+        },
+        "description": {
+          "title": "Product.description",
+          "type": "string"
+        },
+        "price": {
+          "title": "Product.price",
+          "type": "number"
+        },
+        "title": {
+          "title": "Product.title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "price",
+        "title"
+      ],
+      "additionalProperties": false,
+      "title": "Product",
+      "type": "object"
+    },
+    "ProductInStock": {
+      "properties": {
+        "count": {
+          "title": "ProductInStock.count"
+        }
+      },
+      "required": [
+        "count"
+      ],
+      "additionalProperties": false,
+      "title": "ProductInStock",
+      "type": "object"
+    },
+    "StockItem": {
+      "properties": {
+        "productId": {
+          "title": "StockItem.productId",
+          "type": "string"
+        },
+        "count": {
+          "title": "StockItem.count",
+          "type": "number"
+        }
+      },
+      "required": [
+        "productId",
+        "count"
+      ],
+      "additionalProperties": false,
+      "title": "StockItem",
+      "type": "object"
+    },
+    "PutUpsertProductInStockBody": {
+      "$ref": "#/definitions/Product",
+      "title": "PutUpsertProductInStockBody"
+    }
+  },
   "securityDefinitions": {}
 };

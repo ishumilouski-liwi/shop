@@ -1,6 +1,10 @@
 import { ProductInStock } from "@models/ProductInStock";
 import { ProductService } from "./ProductService";
 import { StockService } from "./StockService";
+import { Product } from "@models/Product";
+import { StockItem } from "@models/Stock";
+import { ddbDocClient } from "@libs/ddbClient";
+import { TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 
 export class ProductStockService {
   private productService = new ProductService();
@@ -40,5 +44,25 @@ export class ProductStockService {
         count: itemInStock ? itemInStock.count : 0,
       };
     });
+  }
+
+  async createProductInStock(product: Product, stockItem: StockItem) {
+    const command = new TransactWriteCommand({
+      TransactItems: [{
+        Put: {
+          TableName: ProductService.getTableName(),
+          Item: product,
+          ConditionExpression: 'attribute_not_exists(PK)'
+        }
+      }, {
+        Put: {
+          TableName: StockService.getTableName(),
+          Item: stockItem,
+          ConditionExpression: 'attribute_not_exists(PK)'
+        }
+      }]
+    })
+
+    return await ddbDocClient.send(command);
   }
 }

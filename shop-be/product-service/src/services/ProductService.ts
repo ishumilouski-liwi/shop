@@ -3,13 +3,16 @@ import { ddbDocClient } from "@libs/ddbClient";
 import { Product } from "@models/Product";
 
 export class ProductService {
+  public static getTableName() {
+    return process.env.DB_PRODUCTS_TABLE_NAME;
+  }
   /**
    * Queries all products
    */
   async getProducts(): Promise<Product[]> {
     const { Items: products } = await ddbDocClient.send(
       new ScanCommand({
-        TableName: process.env.DB_PRODUCTS_TABLE_NAME,
+        TableName: ProductService.getTableName(),
       })
     );
 
@@ -21,7 +24,7 @@ export class ProductService {
    */
   async getProduct(id: string): Promise<Product> {
     const command = new QueryCommand({
-      TableName: process.env.DB_PRODUCTS_TABLE_NAME,
+      TableName: ProductService.getTableName(),
       KeyConditionExpression: "id = :id",
       ExpressionAttributeValues: {
         ":id": id,
@@ -42,7 +45,7 @@ export class ProductService {
   async addProduct(product: Product) {
     const response = await ddbDocClient.send(
       new PutCommand({
-        TableName: process.env.DB_PRODUCTS_TABLE_NAME,
+        TableName: ProductService.getTableName(),
         Item: product,
       })
     );

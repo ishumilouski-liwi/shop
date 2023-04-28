@@ -3,12 +3,15 @@ import { ddbDocClient } from "@libs/ddbClient";
 import { StockItem } from "@models/Stock";
 
 export class StockService {
+  public static getTableName() {
+    return process.env.DB_STOCK_TABLE_NAME
+  }
   /**
    * Queries all products details in the stock
    */
   async getItems(): Promise<StockItem[]> {
     const command = new ScanCommand({
-      TableName: process.env.DB_STOCK_TABLE_NAME,
+      TableName: StockService.getTableName(),
     });
 
     const response = await ddbDocClient.send(command);
@@ -22,7 +25,7 @@ export class StockService {
   async addItem(productId: string, count: number) {
     const response = await ddbDocClient.send(
       new PutCommand({
-        TableName: process.env.DB_STOCK_TABLE_NAME,
+        TableName: StockService.getTableName(),
         Item: {
           productId,
           count,
