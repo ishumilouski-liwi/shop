@@ -1,4 +1,4 @@
-service: shop-app
+service: shop-fe
 
 frameworkVersion: "3"
 
@@ -6,7 +6,6 @@ provider:
   name: aws
   runtime: nodejs14.x
   region: us-east-1
-
 plugins:
   - serverless-finch
   # 'serverless-single-page-app-plugin' is a custom plugin that located .serverless_plugins folder.
@@ -34,7 +33,9 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.s3BucketName}
-        AccessControl: PublicRead
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: ObjectWriter
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
