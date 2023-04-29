@@ -1,4 +1,4 @@
-service: shop-fe
+service: shop-web-app-deployment-bucket
 
 frameworkVersion: "3"
 
@@ -16,7 +16,7 @@ plugins:
 
 custom:
   client:
-    bucketName: shop-fe
+    bucketName: shop-web-app
     distributionFolder: dist
   s3BucketName: ${self:custom.client.bucketName}
 

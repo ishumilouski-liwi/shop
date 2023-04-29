@@ -22,6 +22,16 @@ const serverlessConfiguration: AWS = {
       name: '${self:service}',
       serverSideEncryption: "AES256"
     },
+    apiGateway: {
+      minimumCompressionSize: 1024,
+      shouldStartNameWithService: true,
+    },
+    environment: {
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
+      NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      DB_PRODUCTS_TABLE_NAME: "${ssm:/system/api/DB_PRODUCTS_TABLE_NAME}",
+      DB_STOCK_TABLE_NAME: "${ssm:/system/api/DB_STOCK_TABLE_NAME}",
+    },
     iamRoleStatements: [
       {
         Effect: 'Allow',
@@ -36,16 +46,6 @@ const serverlessConfiguration: AWS = {
         ]
       },
     ],
-    apiGateway: {
-      minimumCompressionSize: 1024,
-      shouldStartNameWithService: true,
-    },
-    environment: {
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
-      NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
-      DB_PRODUCTS_TABLE_NAME: "${ssm:/system/api/DB_PRODUCTS_TABLE_NAME}",
-      DB_STOCK_TABLE_NAME: "${ssm:/system/api/DB_STOCK_TABLE_NAME}",
-    },
   },
   // import the function via paths
   functions: { getProductsInStock, getProductInStock, upsertProductInStock },
