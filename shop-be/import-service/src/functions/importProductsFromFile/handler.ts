@@ -11,7 +11,7 @@ export const importProductsFromFile = GET(async (event) => {
     const importService = new ImportService();
 
     const url = await importService.generateSignedURL(name);
-    console.log(`Generate Presigned URL for Bucket: ${process.env.BUCKET_NAME}`);
+    console.log(`Generate Presigned URL for Bucket: ${process.env.UPLOADED_FILES_BUCKET}`);
     console.log("[Lambda invocation result]: ", JSON.stringify(url));
 
     return formatJSONResponse(200, url);

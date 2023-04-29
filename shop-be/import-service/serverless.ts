@@ -1,6 +1,6 @@
 import type { AWS } from "@serverless/typescript";
 
-import { importProductsFromFile } from './src/functions'
+import { importProductsFromFile, parseImportedFile } from './src/functions'
 
 const serverlessConfiguration: AWS = {
   service: "shop-product-import-service",
@@ -27,9 +27,19 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
-      UPLOADED_FILES_BUCKET: 'shop-uploaded-files-bucket'
+      UPLOADED_FILES_BUCKET: 'shop-uploaded-files-bucket',
+      UPLOADED_FILES_FOLDER: 'uploaded',
+      PARSED_FILES_BUCKET: 'shop-parsed-files-bucket',
+      PARSED_FILES_FOLDER: 'parsed'
     },
     iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 's3:ListBucket',
+        Resource: [
+          'arn:aws:s3:::${self:provider.environment.UPLOADED_FILES_BUCKET}'
+        ]
+      },
       {
         Effect: 'Allow',
         Action: 's3:*',
@@ -40,11 +50,11 @@ const serverlessConfiguration: AWS = {
     ],
   },
   // import the function via paths
-  functions: { importProductsFromFile },
+  functions: { importProductsFromFile, parseImportedFile },
   package: { individually: true },
   resources: {
     Resources: {
-      'S3Bucket': {
+      UploadedFilesBucket: {
         Type: 'AWS::S3::Bucket',
         Properties: {
           PublicAccessBlockConfiguration: {
@@ -67,11 +77,11 @@ const serverlessConfiguration: AWS = {
           }
         },
       },
-      S3BucketPolicy: {
+      UploadedFilesBucketPolicy: {
         Type: 'AWS::S3::BucketPolicy',
         Properties: {
           Bucket: {
-            Ref: 'S3Bucket'
+            Ref: 'UploadedFilesBucket'
           },
           PolicyDocument: {
             Statement: [{
@@ -83,7 +93,48 @@ const serverlessConfiguration: AWS = {
                   [
                     'arn:aws:s3:::',
                     {
-                      Ref: 'S3Bucket',
+                      Ref: 'UploadedFilesBucket',
+                    },
+                    '/*'
+                  ]
+                ]
+              },
+              Principal: "*"
+            }]
+          },
+        }
+      },
+      ParsedFilesBucket: {
+        Type: 'AWS::S3::Bucket',
+        Properties: {
+          PublicAccessBlockConfiguration: {
+            BlockPublicPolicy: false,
+          },
+          BucketName: '${self:provider.environment.PARSED_FILES_BUCKET}',
+          OwnershipControls: {
+            Rules: [{
+              ObjectOwnership: 'ObjectWriter'
+            }]
+          },
+        },
+      },
+      ParsedFilesBucketPolicy: {
+        Type: 'AWS::S3::BucketPolicy',
+        Properties: {
+          Bucket: {
+            Ref: 'ParsedFilesBucket'
+          },
+          PolicyDocument: {
+            Statement: [{
+              Effect: 'Allow',
+              Action: ['s3:*'],
+              Resource: {
+                'Fn::Join': [
+                  '',
+                  [
+                    'arn:aws:s3:::',
+                    {
+                      Ref: 'ParsedFilesBucket',
                     },
                     '/*'
                   ]
@@ -95,11 +146,6 @@ const serverlessConfiguration: AWS = {
         }
       },
     },
-    Outputs: {
-      BucketName: {
-        Value: '!Ref S3Bucket'
-      }
-    }
   },
   custom: {
     jest: {},
