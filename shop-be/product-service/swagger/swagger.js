@@ -124,6 +124,35 @@
       "title": "ProductInStock",
       "type": "object"
     },
+    "ImportedProductInStock": {
+      "properties": {
+        "Title": {
+          "title": "ImportedProductInStock.Title",
+          "type": "string"
+        },
+        "Description": {
+          "title": "ImportedProductInStock.Description",
+          "type": "string"
+        },
+        "Price": {
+          "title": "ImportedProductInStock.Price",
+          "type": "string"
+        },
+        "Count": {
+          "title": "ImportedProductInStock.Count",
+          "type": "string"
+        }
+      },
+      "required": [
+        "Title",
+        "Description",
+        "Price",
+        "Count"
+      ],
+      "additionalProperties": false,
+      "title": "ImportedProductInStock",
+      "type": "object"
+    },
     "StockItem": {
       "properties": {
         "productId": {

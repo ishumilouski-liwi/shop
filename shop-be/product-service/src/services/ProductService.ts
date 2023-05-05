@@ -1,3 +1,4 @@
+import { AttributeValue } from "@aws-sdk/client-dynamodb";
 import { PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { ddbDocClient } from "@libs/ddbClient";
 import { Product } from "@models/Product";
@@ -51,5 +52,35 @@ export class ProductService {
     );
 
     return response;
+  }
+
+  static mapDBItemSchema(product: Product): Record<string, AttributeValue>  {
+    const schema = {
+      id: {
+        S: product.id
+      },
+      title: {
+        S: product.title
+      },
+      price: {
+        N: String(product.price)
+      },
+      description: {
+        S: product.description
+      },
+    }
+
+    console.log('Prepared schema for product item: ', schema);
+    return schema;
+  }
+
+  static prepareWriteItemSchema(product: Product) {
+    return {
+      Put: {
+        TableName: ProductService.getTableName(),
+        Item: ProductService.mapDBItemSchema(product),
+        ConditionExpression: 'attribute_not_exists(PK)'
+      }
+    }
   }
 }

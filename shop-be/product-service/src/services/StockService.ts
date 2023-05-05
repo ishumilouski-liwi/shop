@@ -1,3 +1,4 @@
+import { AttributeValue, TransactWriteItem } from "@aws-sdk/client-dynamodb";
 import { PutCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { ddbDocClient } from "@libs/ddbClient";
 import { StockItem } from "@models/Stock";
@@ -49,5 +50,29 @@ export class StockService {
     }
 
     return stockItem;
+  }
+
+  static mapDBItemSchema(stockItem: StockItem): Record<string, AttributeValue> {
+    return {
+      productId: {
+        S: stockItem.productId
+      },
+      count: {
+        S: String(stockItem.count)
+      },
+    }
+  }
+
+  static prepareWriteItemSchema(stockItem: StockItem): TransactWriteItem {
+    const schema = StockService.mapDBItemSchema(stockItem);
+
+    console.log('Prepared schema for stock item: ', schema);
+    return {
+      Put: {
+        TableName: StockService.getTableName(),
+        Item: schema,
+        ConditionExpression: 'attribute_not_exists(PK)'
+      }
+    }
   }
 }

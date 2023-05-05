@@ -1,10 +1,12 @@
-import { ProductInStock } from "@models/ProductInStock";
+import { ImportedProductInStock, ProductInStock } from "@models/ProductInStock";
+import crypto from 'crypto';
 import { ProductService } from "./ProductService";
 import { StockService } from "./StockService";
 import { Product } from "@models/Product";
 import { StockItem } from "@models/Stock";
 import { ddbDocClient } from "@libs/ddbClient";
 import { TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
+import { TransactWriteItem, TransactWriteItemsCommand } from "@aws-sdk/client-dynamodb";
 
 export class ProductStockService {
   private productService = new ProductService();
@@ -64,5 +66,47 @@ export class ProductStockService {
     })
 
     return await ddbDocClient.send(command);
+  }
+
+  /**
+   * Creates multiple products and assigns them in the stock 
+   */
+  async batchCreateProductInStock(items: ImportedProductInStock[]): Promise<ProductInStock[]> {
+    const { products, stockItems } = items.reduce((acc, item) => {
+      const productId = crypto.randomUUID();
+
+      acc.products.push({
+        id: productId,
+        title: item.Title,
+        description: item.Description,
+        price: Number(item.Price),
+      });
+
+      acc.stockItems.push({
+        productId,
+        count: Number(item.Count),
+      });
+
+      return acc;
+    }, { products: [], stockItems: [] });
+
+
+    const command = new TransactWriteItemsCommand({
+      TransactItems: [
+        ...products.map(product => ProductService.prepareWriteItemSchema(product)),
+        ...stockItems.map(stockItem => StockService.prepareWriteItemSchema(stockItem)),
+      ]
+    });
+
+    await ddbDocClient.send(command);
+
+    return products.map(product => {
+      const stockItem = stockItems.find(({ productId }) => productId === product.id);
+
+      return {
+        ...product,
+        count: stockItem.count,
+      }
+    });
   }
 }

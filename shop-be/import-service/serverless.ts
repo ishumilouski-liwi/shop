@@ -5,6 +5,7 @@ import { importProductsFromFile, parseImportedFile } from './src/functions'
 const serverlessConfiguration: AWS = {
   service: "shop-product-import-service",
   frameworkVersion: "3",
+  useDotenv: true,
   plugins: [
     "serverless-auto-swagger",
     "serverless-esbuild",
@@ -30,7 +31,8 @@ const serverlessConfiguration: AWS = {
       UPLOADED_FILES_BUCKET: 'shop-uploaded-files-bucket',
       UPLOADED_FILES_FOLDER: 'uploaded',
       PARSED_FILES_BUCKET: 'shop-parsed-files-bucket',
-      PARSED_FILES_FOLDER: 'parsed'
+      PARSED_FILES_FOLDER: 'parsed',
+      CATALOG_BATCH_PROCESS_QUEUE: '${env:CATALOG_BATCH_PROCESS_QUEUE}'
     },
     iamRoleStatements: [
       {
@@ -47,6 +49,11 @@ const serverlessConfiguration: AWS = {
           'arn:aws:s3:::${self:provider.environment.UPLOADED_FILES_BUCKET}/*'
         ]
       },
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: ['*']
+      }
     ],
   },
   // import the function via paths
